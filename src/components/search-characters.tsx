@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Characters } from '../App';
+import { CharactersProps } from '../App';
 import { enableMicrophone } from '../services/enable-microphone';
 
 // La inicializo y la exporto para poder cambiar el estado de buttonState desde otro archivo
 export let exportButtonState:any;
 export let onChangeVoice:any;
 
-const SearchCharacters = ( { characters }:Characters )=>{ 
+
+const SearchCharacters = ( { characters, characterFound }:CharactersProps )=>{ 
 
     const [ inputCurrentValueState, setInputCuurentValueState ] = useState<string>('')
     const [ nameFoundState, setNameFoundState ] = useState<string[]>([]);
@@ -37,15 +38,14 @@ const SearchCharacters = ( { characters }:Characters )=>{
         }
         return result;
     })
-
         
     nameFound.length !== 0 && JSON.stringify( nameFound ) !== JSON.stringify( nameFoundState ) &&
-    setNameFoundState( nameFound ) 
+    // setNameFoundState( nameFound )
+    characterFound( nameFound ) 
         
     nameFound.length === 0 && nameFoundState.length !== 0 && 
-    setNameFoundState( [] );
-    
-
+    // setNameFoundState( [] );
+    characterFound( nameFound )
 
 
     return (
@@ -56,13 +56,6 @@ const SearchCharacters = ( { characters }:Characters )=>{
                 { buttonState === 'start'? 
                     <button onClick={ enableMicrophone } >Iniciar</button> :
                     <button onClick={ enableMicrophone } >Detener</button>
-                }
-            </div>
-            <div className='search-results'>
-                { 
-                    nameFoundState.map( name => (
-                        <p>{ name }</p>
-                    )) 
                 }
             </div>
         </div>
