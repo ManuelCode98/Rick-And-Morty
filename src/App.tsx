@@ -2,21 +2,48 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { requestApi, CharactersAllData } from './services/request-api';
 import { SearchCharacters } from './components/search-characters';
+import { ResultCharacters } from './components/result-characters';
+import { compareArray } from './use-case/function-compare-arrays';
 
 
-export interface NameCharacters {
+export interface NameAndIdCharacters {
   id: number, name: string, 
 }
 
-export interface Characters {
-  characters: NameCharacters[] 
+export interface CharactersProps {
+  characters: NameAndIdCharacters[] 
+  characterFound: Function
+}
+
+export interface NameCharacters {
+  name: string[]
+}
+
+export interface ShowCharacters {
+  showCharacters: string[] 
 }
 
 
 function App( ) {
 
   const [ allDataState, setAllDataState ] = useState<CharactersAllData[]>([]);
-  const [ nameCharactersState, setNameCharactersState ] = useState<NameCharacters[]>([])
+  const [ nameCharactersState, setNameCharactersState ] = useState<NameAndIdCharacters[]>([]);
+  const [ characterResulFoundState, setCharacterResulFoundState ] = useState<string[]>([]);
+
+  
+
+  const inputData = ( characterFound:string[] )=>{ 
+
+    const objCompareArr:any = {
+      array1: characterFound, 
+      comparator: '===',
+      array2: characterResulFoundState
+    }
+    
+    if( characterFound.length < 1 || compareArray( objCompareArr ) ) return
+    setCharacterResulFoundState( characterFound )
+    
+  };
 
 
   useEffect(() => {
@@ -56,8 +83,8 @@ function App( ) {
   return ( 
   
     <div className='app-container'>
-      <SearchCharacters characters = { nameCharactersState } ></SearchCharacters>
-
+      <SearchCharacters characters={ nameCharactersState } characterFound={ inputData } />
+      <ResultCharacters showCharacters = { characterResulFoundState } />
     </div>
   
 
